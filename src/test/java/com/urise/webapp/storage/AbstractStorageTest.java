@@ -3,6 +3,7 @@ package com.urise.webapp.storage;
 import com.urise.webapp.exception.NotFoundStorageException;
 import com.urise.webapp.model.Resume;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -31,6 +32,7 @@ abstract class AbstractStorageTest {
 
 
     @Test
+    @DisplayName("Clear storage")
     void itShouldClear() {
         // Given
         // When
@@ -41,6 +43,7 @@ abstract class AbstractStorageTest {
     }
 
     @Test
+    @DisplayName("Get resume from storage")
     void itShouldGet() {
         // Given
         // When
@@ -51,6 +54,20 @@ abstract class AbstractStorageTest {
     }
 
     @Test
+    @DisplayName("Throw when trying to get Resume with wrong uuid")
+    void itShouldThrowWhenTryToGetWrongUuid() {
+        // Given
+        String uuid = "SomeStrangeUuid";
+
+        // When
+        // Then
+        assertThatThrownBy(() -> storage.get(uuid))
+                .isInstanceOf(NotFoundStorageException.class)
+                .hasMessageContaining("Resume " + uuid + " not found!");
+    }
+
+    @Test
+    @DisplayName("Delete resume")
     void itShouldDelete() {
         // Given
         String uuid = RESUME_1.getUuid();
@@ -65,6 +82,20 @@ abstract class AbstractStorageTest {
     }
 
     @Test
+    @DisplayName("Throw when trying to delete Resume with wrong uuid")
+    void itShouldThrowWhenTryToDeleteWrongUuid() {
+        // Given
+        String uuid = "SomeStrangeUuid";
+
+        // When
+        // Then
+        assertThatThrownBy(() -> storage.delete(uuid))
+                .isInstanceOf(NotFoundStorageException.class)
+                .hasMessageContaining("Resume " + uuid + " not found!");
+    }
+
+    @Test
+    @DisplayName("Get all Resumes sorted")
     void itShouldGetAllSorted() {
         // Given
         // When
@@ -72,24 +103,40 @@ abstract class AbstractStorageTest {
     }
 
     @Test
+    @DisplayName("Save resume")
     void itShouldSave() {
         // Given
+        String uuid = UUID.randomUUID().toString();
+        String newFullName = "Some new Full name";
+        Resume savedResume = new Resume(uuid, newFullName);
+
         // When
+        storage.save(savedResume);
+
         // Then
+        assertThat(storage.get(uuid)).isEqualTo(savedResume);
+        assertEquals(4, storage.size());
     }
 
     @Test
+    @DisplayName("Update resume")
     void itShouldUpdate() {
         // Given
+        String uuid = RESUME_1.getUuid();
+        String newFullName = "Some new Full name";
+        Resume updatedResume = new Resume(uuid, newFullName);
+
         // When
+        storage.update(updatedResume);
+
         // Then
+        assertThat(storage.get(uuid)).isEqualTo(updatedResume);
+        assertEquals(3, storage.size());
     }
 
     @Test
+    @DisplayName("Check storage size")
     void itShouldGiveRightSize() {
-        // Given
-        // When
-        // Then
         assertEquals(3, storage.size());
     }
 }
