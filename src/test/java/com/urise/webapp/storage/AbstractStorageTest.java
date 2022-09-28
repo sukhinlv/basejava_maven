@@ -20,7 +20,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 abstract class AbstractStorageTest {
     // folder test_storage must be created in root folder of the project
+    // for production use "= new File(Config.get().getStorageDir());"
     protected static final File STORAGE_DIR = new File("test_storage");
+    // for production use " = Paths.get(Config.get().getStorageDir());"
     protected static final Path STORAGE_PATH = Paths.get("test_storage");
 
     // do not change uuids and names order, they used to check getAllSorted
