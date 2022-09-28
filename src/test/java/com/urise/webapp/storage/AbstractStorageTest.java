@@ -22,6 +22,8 @@ abstract class AbstractStorageTest {
     // folder test_storage must be created in root folder of the project
     protected static final File STORAGE_DIR = new File("test_storage");
     protected static final Path STORAGE_PATH = Paths.get("test_storage");
+
+    // do not change uuids and names order, they used to check getAllSorted
     private static final Resume RESUME_1 = createTestResumeWithAllFields("uuid1", "Full name 2");
     private static final Resume RESUME_2 = createTestResumeWithAllFields("uuid2", "Full name 3");
     private static final Resume RESUME_3 = createTestResumeOnlyContacts("uuid3", "Full name 1");

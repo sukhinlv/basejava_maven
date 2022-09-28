@@ -1,4 +1,4 @@
-package com.urise.webapp.storage.serializer;
+package com.urise.webapp.serializer;
 
 import com.urise.webapp.model.*;
 import com.urise.webapp.util.XmlParser;
