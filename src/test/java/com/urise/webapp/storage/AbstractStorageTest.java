@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -13,9 +15,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 abstract class AbstractStorageTest {
-    private static final Resume RESUME_1 = new Resume(UUID.randomUUID().toString(), "");
-    private static final Resume RESUME_2 = new Resume(UUID.randomUUID().toString(), "");
-    private static final Resume RESUME_3 = new Resume(UUID.randomUUID().toString(), "");
+    private static final Resume RESUME_1 = new Resume("uuid1", "Full name 2");
+    private static final Resume RESUME_2 = new Resume("uuid2", "Full name 3");
+    private static final Resume RESUME_3 = new Resume("uuid3", "Full name 1");
+    private static final Resume RESUME_4 = new Resume("uuid4", "Full name 2");
     protected final Storage storage;
 
     public AbstractStorageTest(Storage storage) {
@@ -28,6 +31,7 @@ abstract class AbstractStorageTest {
         storage.save(RESUME_1);
         storage.save(RESUME_2);
         storage.save(RESUME_3);
+        storage.save(RESUME_4);
     }
 
 
@@ -98,8 +102,17 @@ abstract class AbstractStorageTest {
     @DisplayName("Get all Resumes sorted")
     void itShouldGetAllSorted() {
         // Given
+        ArrayList<Resume> expectedResumes = new ArrayList<>();
+        expectedResumes.add(RESUME_3);
+        expectedResumes.add(RESUME_1);
+        expectedResumes.add(RESUME_4);
+        expectedResumes.add(RESUME_2);
+
         // When
+        List<Resume> resumesFromStorage = storage.getAllSorted();
+
         // Then
+        assertThat(resumesFromStorage).isEqualTo(expectedResumes);
     }
 
     @Test
@@ -115,7 +128,7 @@ abstract class AbstractStorageTest {
 
         // Then
         assertThat(storage.get(uuid)).isEqualTo(savedResume);
-        assertEquals(4, storage.size());
+        assertEquals(5, storage.size());
     }
 
     @Test
@@ -131,12 +144,12 @@ abstract class AbstractStorageTest {
 
         // Then
         assertThat(storage.get(uuid)).isEqualTo(updatedResume);
-        assertEquals(3, storage.size());
+        assertEquals(4, storage.size());
     }
 
     @Test
     @DisplayName("Check storage size")
     void itShouldGiveRightSize() {
-        assertEquals(3, storage.size());
+        assertEquals(4, storage.size());
     }
 }
