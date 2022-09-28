@@ -4,6 +4,7 @@ import com.urise.webapp.exception.NotFoundStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.sql.SqlHelper;
 import com.urise.webapp.util.JsonParser;
+import com.urise.webapp.util.JsonParserObject;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
+    private final JsonParser jsonParser = new JsonParserObject();
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));
@@ -167,9 +169,9 @@ public class SqlStorage implements Storage {
         var type = SectionType.valueOf(rs.getString("type"));
         if (value != null) {
             switch (type) {
-                case PERSONAL, OBJECTIVE -> resume.putSection(type, JsonParser.read(value, TextSection.class));
-                case ACHIEVEMENTS, QUALIFICATIONS -> resume.putSection(type, JsonParser.read(value, ListSection.class));
-                case EXPERIENCE, EDUCATION -> resume.putSection(type, JsonParser.read(value, OrganizationSection.class));
+                case PERSONAL, OBJECTIVE -> resume.putSection(type, jsonParser.read(value, TextSection.class));
+                case ACHIEVEMENTS, QUALIFICATIONS -> resume.putSection(type, jsonParser.read(value, ListSection.class));
+                case EXPERIENCE, EDUCATION -> resume.putSection(type, jsonParser.read(value, OrganizationSection.class));
             }
         }
     }
@@ -191,7 +193,7 @@ public class SqlStorage implements Storage {
             for (Map.Entry<SectionType, AbstractSection> e : resume.getSections().entrySet()) {
                 ps.setString(1, resume.getUuid());
                 ps.setString(2, e.getKey().name());
-                ps.setString(3, JsonParser.write(e.getValue()));
+                ps.setString(3, jsonParser.write(e.getValue()));
                 ps.addBatch();
             }
             ps.executeBatch();

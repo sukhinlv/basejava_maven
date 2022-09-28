@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 class JsonParserTest {
 
+    private final JsonParser jsonParser = new JsonParserObject();
+
     @BeforeEach
     void setUp() {
     }
@@ -16,16 +18,16 @@ class JsonParserTest {
     @Test
     void testRWResume() {
         var resume = ResumeTestData.createTestResume("UUID_1", "NAME_1");
-        String jsonString = JsonParser.write(resume);
-        Resume resumeFromJsonString = JsonParser.read(jsonString, Resume.class);
+        String jsonString = jsonParser.write(resume);
+        Resume resumeFromJsonString = jsonParser.read(jsonString, Resume.class);
         Assertions.assertEquals(resume, resumeFromJsonString);
     }
 
     @Test
     void testRWSections() {
         var section = new TextSection("section data");
-        String jsonString = JsonParser.write(section);
-        TextSection sectionFromJsonString = JsonParser.read(jsonString, TextSection.class);
+        String jsonString = jsonParser.write(section);
+        TextSection sectionFromJsonString = jsonParser.read(jsonString, TextSection.class);
         Assertions.assertEquals(section, sectionFromJsonString);
     }
 }

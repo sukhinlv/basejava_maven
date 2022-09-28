@@ -49,15 +49,9 @@ public class ResumeServlet extends HttpServlet {
         var sections = new HashMap<SectionType, AbstractSection>();
         for (SectionType section : SectionType.values()) {
             switch (section) {
-                case PERSONAL, OBJECTIVE -> {
-                    addTextSection(request, sections, section);
-                }
-                case ACHIEVEMENTS, QUALIFICATIONS -> {
-                    addListSection(request, sections, section);
-                }
-                case EXPERIENCE, EDUCATION -> {
-                    addOrganizationSection(request, sections, section);
-                }
+                case PERSONAL, OBJECTIVE -> addTextSection(request, sections, section);
+                case ACHIEVEMENTS, QUALIFICATIONS -> addListSection(request, sections, section);
+                case EXPERIENCE, EDUCATION -> addOrganizationSection(request, sections, section);
             }
         }
         resume.setSections(sections);

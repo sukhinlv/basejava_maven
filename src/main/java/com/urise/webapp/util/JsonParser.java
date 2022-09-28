@@ -8,25 +8,25 @@ import java.io.Reader;
 import java.io.Writer;
 import java.time.LocalDate;
 
-public class JsonParser {
-    private static final Gson GSON = new GsonBuilder()
+public interface JsonParser {
+    Gson GSON = new GsonBuilder()
             .registerTypeAdapter(AbstractSection.class, new JsonSectionAdapter())
             .registerTypeAdapter(LocalDate.class, new JsonLocalDateAdapter())
             .create();
 
-    public static <T> T read(Reader reader, Class<T> clazz) {
+    default <T> T read(Reader reader, Class<T> clazz) {
         return GSON.fromJson(reader, clazz);
     }
 
-    public static <T> T read(String value, Class<T> clazz) {
+    default <T> T read(String value, Class<T> clazz) {
         return GSON.fromJson(value, clazz);
     }
 
-    public static <T> void write(T object, Writer writer) {
+    default <T> void write(T object, Writer writer) {
         GSON.toJson(object, writer);
     }
 
-    public static <T> String write(T object) {
+    default <T> String write(T object) {
         return GSON.toJson(object);
     }
 }
