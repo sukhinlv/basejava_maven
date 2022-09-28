@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,6 +19,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 abstract class AbstractStorageTest {
+    // folder test_storage must be created in root folder of the project
+    protected static final File STORAGE_DIR = new File("test_storage");
+    protected static final Path STORAGE_PATH = Paths.get("test_storage");
     private static final Resume RESUME_1 = createTestResumeWithAllFields("uuid1", "Full name 2");
     private static final Resume RESUME_2 = createTestResumeWithAllFields("uuid2", "Full name 3");
     private static final Resume RESUME_3 = createTestResumeOnlyContacts("uuid3", "Full name 1");
