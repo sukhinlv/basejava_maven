@@ -19,7 +19,9 @@ class JsonParserTest {
     @DisplayName("Write Resume to Json string and read it from Json string")
     void itShouldRWResume() {
         String jsonString = jsonParser.write(resume);
+
         Resume resumeFromJsonString = jsonParser.read(jsonString, Resume.class);
+
         Assertions.assertEquals(resume, resumeFromJsonString);
     }
 
@@ -28,7 +30,9 @@ class JsonParserTest {
     void testRWTextSection() {
         AbstractSection section = resume.getSection(SectionType.OBJECTIVE);
         String jsonString = jsonParser.write(section);
+
         TextSection sectionFromJsonString = jsonParser.read(jsonString, TextSection.class);
+
         Assertions.assertEquals(section, sectionFromJsonString);
     }
 
@@ -37,7 +41,9 @@ class JsonParserTest {
     void testRWListSection() {
         AbstractSection section = resume.getSection(SectionType.ACHIEVEMENTS);
         String jsonString = jsonParser.write(section);
+
         ListSection sectionFromJsonString = jsonParser.read(jsonString, ListSection.class);
+
         Assertions.assertEquals(section, sectionFromJsonString);
     }
     @Test
@@ -45,7 +51,9 @@ class JsonParserTest {
     void testRWOrganizationSection() {
         AbstractSection section = resume.getSection(SectionType.EXPERIENCE);
         String jsonString = jsonParser.write(section);
+
         OrganizationSection sectionFromJsonString = jsonParser.read(jsonString, OrganizationSection.class);
+
         Assertions.assertEquals(section, sectionFromJsonString);
     }
     private Resume createTestResume() {
