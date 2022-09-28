@@ -1,11 +1,14 @@
 package com.urise.webapp.storage;
 
+import com.urise.webapp.exception.NotFoundStorageException;
 import com.urise.webapp.model.Resume;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 abstract class AbstractStorageTest {
@@ -41,14 +44,24 @@ abstract class AbstractStorageTest {
     void itShouldGet() {
         // Given
         // When
+        Resume resumeFromStorage = storage.get(RESUME_1.getUuid());
+
         // Then
+        assertThat(resumeFromStorage).isEqualTo(RESUME_1);
     }
 
     @Test
     void itShouldDelete() {
         // Given
+        String uuid = RESUME_1.getUuid();
+
         // When
+        storage.delete(uuid);
+
         // Then
+        assertThatThrownBy(() -> storage.get(uuid))
+                .isInstanceOf(NotFoundStorageException.class)
+                .hasMessageContaining("Resume " + uuid + " not found!");
     }
 
     @Test
