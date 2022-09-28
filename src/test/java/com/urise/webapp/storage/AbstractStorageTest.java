@@ -10,15 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.urise.webapp.storage.TestResumesGenerator.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 abstract class AbstractStorageTest {
-    private static final Resume RESUME_1 = new Resume("uuid1", "Full name 2");
-    private static final Resume RESUME_2 = new Resume("uuid2", "Full name 3");
-    private static final Resume RESUME_3 = new Resume("uuid3", "Full name 1");
-    private static final Resume RESUME_4 = new Resume("uuid4", "Full name 2");
+    private static final Resume RESUME_1 = createTestResumeWithAllFields("uuid1", "Full name 2");
+    private static final Resume RESUME_2 = createTestResumeWithAllFields("uuid2", "Full name 3");
+    private static final Resume RESUME_3 = createTestResumeOnlyContacts("uuid3", "Full name 1");
+    private static final Resume RESUME_4 = createTestResumeWithAllFieldsMinimal("uuid4", "Full name 2");
     protected final Storage storage;
 
     public AbstractStorageTest(Storage storage) {
