@@ -1,7 +1,7 @@
 package com.urise.webapp.storage;
 
 import com.urise.webapp.Config;
-import com.urise.webapp.exception.FoundStorageException;
+import com.urise.webapp.exception.FoundDuplicateStorageException;
 import com.urise.webapp.exception.NotFoundStorageException;
 import com.urise.webapp.model.Resume;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.urise.webapp.storage.ResumeTestData.*;
 
 public abstract class AbstractStorageTest {
     protected static final File STORAGE_DIR = new File(Config.get().getStorageDir());
@@ -27,10 +29,10 @@ public abstract class AbstractStorageTest {
     protected static final String NAME_2 = "Иван Иваныч Иванов";
     protected static final String NAME_3 = "Сидор Сидорович Сидоров";
     protected static final String DUMMY = "Dummy";
-    protected static final Resume RESUME_1 = ResumeTestData.createTestResume(UUID_1, NAME_1);
-    protected static final Resume RESUME_2 = ResumeTestData.createTestResume2(UUID_2, NAME_2);
-    protected static final Resume RESUME_3 = ResumeTestData.createTestResume3(UUID_3, NAME_3);
-    protected static final Resume RESUME_DUMMY = ResumeTestData.createTestResume(DUMMY, DUMMY);
+    protected static final Resume RESUME_1 = createTestResume(UUID_1, NAME_1);
+    protected static final Resume RESUME_2 = createTestResume2(UUID_2, NAME_2);
+    protected static final Resume RESUME_3 = createTestResume3(UUID_3, NAME_3);
+    protected static final Resume RESUME_DUMMY = createTestResume(DUMMY, DUMMY);
     protected final Storage storage;
 
     public AbstractStorageTest(Storage storage) {
@@ -84,13 +86,13 @@ public abstract class AbstractStorageTest {
     }
 
     @Test
-    void save() throws FoundStorageException {
-        Resume newResume = ResumeTestData.createTestResume(DUMMY, DUMMY);
+    void save() throws FoundDuplicateStorageException {
+        Resume newResume = createTestResume(DUMMY, DUMMY);
         storage.save(newResume);
         Assertions.assertAll(
                 () -> assertSize(4),
                 () -> assertGet(newResume),
-                () -> Assertions.assertThrows(FoundStorageException.class, () -> storage.save(RESUME_1)));
+                () -> Assertions.assertThrows(FoundDuplicateStorageException.class, () -> storage.save(RESUME_1)));
     }
 
     @Test
@@ -100,12 +102,12 @@ public abstract class AbstractStorageTest {
 
     @Test
     void update() throws NotFoundStorageException {
-        Resume newResume = ResumeTestData.createTestResume(UUID_3, NAME_3);
+        Resume newResume = createTestResume(UUID_3, NAME_3);
         storage.update(newResume);
         Assertions.assertAll(
                 () -> assertSize(3),
                 () -> Assertions.assertEquals(newResume, storage.get(newResume.getUuid())),
-                () -> Assertions.assertThrows(NotFoundStorageException.class, () -> storage.update(ResumeTestData.createTestResume(DUMMY, DUMMY))));
+                () -> Assertions.assertThrows(NotFoundStorageException.class, () -> storage.update(createTestResume(DUMMY, DUMMY))));
     }
 
     void assertGet(Resume resume) {

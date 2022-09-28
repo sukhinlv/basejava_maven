@@ -1,6 +1,6 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.FoundStorageException;
+import com.urise.webapp.exception.FoundDuplicateStorageException;
 import com.urise.webapp.exception.NotFoundStorageException;
 import com.urise.webapp.model.Resume;
 
@@ -64,7 +64,7 @@ public abstract class AbstractStorage<SK> implements Storage {
     private SK findNotExistSearchKey(String uuid) {
         SK searchKey = getSearchKey(uuid);
         if (isExist(searchKey)) {
-            throw new FoundStorageException(uuid);
+            throw new FoundDuplicateStorageException(uuid);
         }
         return searchKey;
     }

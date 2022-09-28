@@ -34,14 +34,42 @@ public class ResumeServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
-        Resume r;
+
+        Resume resume;
         boolean isNew = (uuid == null) || (uuid.isEmpty());
         if (isNew) {
-            r = new Resume(fullName);
+            resume = new Resume(fullName);
         } else {
-            r = storage.get(uuid);
-            r.setFullName(fullName);
+            resume = storage.get(uuid);
+            resume.setFullName(fullName);
         }
+
+        addContacts(request, resume);
+
+        var sections = new HashMap<SectionType, AbstractSection>();
+        for (SectionType section : SectionType.values()) {
+            switch (section) {
+                case PERSONAL, OBJECTIVE -> {
+                    addTextSection(request, sections, section);
+                }
+                case ACHIEVEMENTS, QUALIFICATIONS -> {
+                    addListSection(request, sections, section);
+                }
+                case EXPERIENCE, EDUCATION -> {
+                    addOrganizationSection(request, sections, section);
+                }
+            }
+        }
+        resume.setSections(sections);
+        if (isNew) {
+            storage.save(resume);
+        } else {
+            storage.update(resume);
+        }
+        response.sendRedirect("resume");
+    }
+
+    private static void addContacts(HttpServletRequest request, Resume r) {
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (value != null && value.trim().length() != 0) {
@@ -50,80 +78,70 @@ public class ResumeServlet extends HttpServlet {
                 r.getContacts().remove(type);
             }
         }
+    }
 
-        var sections = new HashMap<SectionType, AbstractSection>();
-        for (SectionType section : SectionType.values()) {
-            switch (section) {
-                case PERSONAL, OBJECTIVE -> {
-                    String value = request.getParameter(section.name());
-                    if (value != null && value.trim().length() != 0) {
-                        sections.put(SectionType.valueOf(section.name()), new TextSection(value.trim()));
-                    }
+    private static void addOrganizationSection(HttpServletRequest request, HashMap<SectionType, AbstractSection> sections, SectionType section) {
+        var orgSections = request.getParameterValues(section.name());
+        var orgEntries = request.getParameterValues(section.name() + "_ENTRY");
+
+        var organizationsMap = new HashMap<String, List<Organization.Period>>();
+        if (orgEntries != null) {
+            var periods = new ArrayList<Organization.Period>();
+            for (int i = 0; i < orgEntries.length; i += 5) {
+                String orgEntry = orgEntries[i];
+                String title = orgEntries[i + 1].trim();
+                String desc = orgEntries[i + 2].trim();
+                LocalDate startDate = LocalDate.parse(orgEntries[i + 3] + ".1", DateTimeFormatter.ofPattern("yyyy.M.d"));
+                LocalDate endDate = orgEntries[i + 4].isBlank() ? NOW : LocalDate.parse(orgEntries[i + 4] + ".1", DateTimeFormatter.ofPattern("yyyy.M.d"));
+                if (title.isBlank()) {
+                    continue;
                 }
-                case ACHIEVEMENTS, QUALIFICATIONS -> {
-                    var values = request.getParameter(section.name());
-                    if (values != null) {
-                        var valuesList = Arrays.stream(values.replace("\r", "\n")
-                                        .split("\\n"))
-                                .map(String::trim)
-                                .filter(s -> !s.isBlank())
-                                .toList();
-                        if (valuesList.size() > 0) {
-                            sections.put(SectionType.valueOf(section.name()), new ListSection(valuesList));
-                        }
-                    }
+
+                if (!organizationsMap.containsKey(orgEntry)) {
+                    periods = new ArrayList<>();
+                    organizationsMap.put(orgEntry, periods);
                 }
-                case EXPERIENCE, EDUCATION -> {
-                    var orgSections = request.getParameterValues(section.name());
-                    var orgEntries = request.getParameterValues(section.name() + "_ENTRY");
-
-                    var organizationsMap = new HashMap<String, List<Organization.Period>>();
-                    if (orgEntries != null) {
-                        var periods = new ArrayList<Organization.Period>();
-                        for (int i = 0; i < orgEntries.length; i += 5) {
-                            String orgEntry = orgEntries[i];
-                            String title = orgEntries[i + 1].trim();
-                            String desc = orgEntries[i + 2].trim();
-                            LocalDate startDate = LocalDate.parse(orgEntries[i + 3] + ".1", DateTimeFormatter.ofPattern("yyyy.M.d"));
-                            LocalDate endDate = orgEntries[i + 4].isBlank() ? NOW : LocalDate.parse(orgEntries[i + 4] + ".1", DateTimeFormatter.ofPattern("yyyy.M.d"));
-                            if (title.isBlank()) {
-                                continue;
-                            }
-
-                            if (!organizationsMap.containsKey(orgEntry)) {
-                                periods = new ArrayList<>();
-                                organizationsMap.put(orgEntry, periods);
-                            }
-                            periods.add(new Organization.Period(title, desc, startDate, endDate));
-                        }
-                    }
-
-                    var orgList = new ArrayList<Organization>();
-                    if (orgSections != null) {
-                        for (int i = 0; i < orgSections.length; i += 3) {
-                            String orgSection = orgSections[i];
-                            String title = orgSections[i + 1];
-                            String website = orgSections[i + 2];
-                            List<Organization.Period> periods = organizationsMap.get(orgSection);
-                            if (title.isBlank() || periods == null) {
-                                continue;
-                            }
-                            orgList.add(new Organization(title, website, periods));
-                        }
-                        if (orgList.size() > 0) {
-                            sections.put(SectionType.valueOf(section.name()), new OrganizationSection(orgList));
-                        }
-                    }
-                }
+                periods.add(new Organization.Period(title, desc, startDate, endDate));
             }
         }
-        r.setSections(sections);
-        if (isNew) {
-            storage.save(r);
-        } else {
-            storage.update(r);
+
+        var orgList = new ArrayList<Organization>();
+        if (orgSections != null) {
+            for (int i = 0; i < orgSections.length; i += 3) {
+                String orgSection = orgSections[i];
+                String title = orgSections[i + 1];
+                String website = orgSections[i + 2];
+                List<Organization.Period> periods = organizationsMap.get(orgSection);
+                if (title.isBlank() || periods == null) {
+                    continue;
+                }
+                orgList.add(new Organization(title, website, periods));
+            }
+            if (orgList.size() > 0) {
+                sections.put(SectionType.valueOf(section.name()), new OrganizationSection(orgList));
+            }
         }
-        response.sendRedirect("resume");
+    }
+
+    private static void addListSection(HttpServletRequest request, HashMap<SectionType, AbstractSection> sections, SectionType section) {
+        var values = request.getParameter(section.name());
+        if (values != null) {
+            var valuesList = Arrays.stream(values.replace("\r", "\n")
+                            .split("\\n"))
+                    .map(String::trim)
+                    .filter(s -> !s.isBlank())
+                    .toList();
+            if (valuesList.size() > 0) {
+                sections.put(SectionType.valueOf(section.name()), new ListSection(valuesList));
+            }
+        }
+    }
+
+    private static void addTextSection(HttpServletRequest request, HashMap<SectionType, AbstractSection> sections, SectionType section) {
+        String value = request.getParameter(section.name());
+        if (value != null && value.trim().length() != 0) {
+            sections.put(SectionType.valueOf(section.name()), new TextSection(value.trim()));
+        }
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
