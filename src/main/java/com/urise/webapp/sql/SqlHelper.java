@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class SqlHelper {
     private final ConnectionFactory connectionFactory;
-    private final SqlToStorageException sqlExceptionConverter = new SqlExceptionConverter();
+    private final SqlExceptionConverter sqlExceptionConverter = new SqlExceptionConverterImpl();
 
     public SqlHelper(ConnectionFactory connectionFactory) {
         this.connectionFactory = Objects.requireNonNull(connectionFactory, "Connection factory must not be null");
