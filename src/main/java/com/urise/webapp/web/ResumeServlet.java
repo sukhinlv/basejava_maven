@@ -30,6 +30,11 @@ public class ResumeServlet extends HttpServlet {
         storage = Config.get().getStorage();
     }
 
+    public void init(Storage storage) throws ServletException {
+        super.init();
+        this.storage = storage;
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         String uuid = request.getParameter("uuid");
