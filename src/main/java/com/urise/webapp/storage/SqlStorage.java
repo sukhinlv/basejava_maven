@@ -7,10 +7,7 @@ import com.urise.webapp.util.JsonParser;
 import com.urise.webapp.util.JsonParserObject;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
@@ -70,7 +67,7 @@ public class SqlStorage implements Storage {
 
     @Override
     public List<Resume> getAllSorted() {
-        var result = new HashMap<String, Resume>();
+        var result = new LinkedHashMap<String, Resume>();
         sqlHelper.transactionalExecute(conn -> {
                     try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM resume ORDER BY full_name, uuid")) {
                         ResultSet rs = ps.executeQuery();
