@@ -4,14 +4,14 @@ import com.urise.webapp.exception.NotFoundStorageException;
 import com.urise.webapp.model.*;
 import com.urise.webapp.sql.SqlHelper;
 import com.urise.webapp.util.JsonParser;
-import com.urise.webapp.util.JsonParserObject;
+import com.urise.webapp.util.JsonParserImpl;
 
 import java.sql.*;
 import java.util.*;
 
 public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
-    private final JsonParser jsonParser = new JsonParserObject();
+    private final JsonParser jsonParser = new JsonParserImpl();
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
         sqlHelper = new SqlHelper(() -> DriverManager.getConnection(dbUrl, dbUser, dbPassword));

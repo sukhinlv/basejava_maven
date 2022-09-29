@@ -12,7 +12,7 @@ import java.util.Map;
 
 class JsonParserTest {
 
-    private final JsonParser jsonParser = new JsonParserObject();
+    private final JsonParser jsonParser = new JsonParserImpl();
     private final Resume resume = createTestResume();
 
     @Test
