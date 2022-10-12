@@ -9,5 +9,4 @@ public class FoundDuplicateStorageException extends StorageException {
     public FoundDuplicateStorageException(String uuid) {
         super("Resume " + uuid + " already in storage!", uuid);
     }
-
 }

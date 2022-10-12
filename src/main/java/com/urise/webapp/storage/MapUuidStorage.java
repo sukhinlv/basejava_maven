@@ -2,7 +2,9 @@ package com.urise.webapp.storage;
 
 import com.urise.webapp.model.Resume;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MapUuidStorage extends AbstractStorage<String> {
     private final HashMap<String, Resume> storage = new HashMap<>();

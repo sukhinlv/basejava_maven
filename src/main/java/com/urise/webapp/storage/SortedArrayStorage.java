@@ -33,7 +33,6 @@ public class SortedArrayStorage extends AbstractArrayStorage {
      * and only if the key is found.
      */
     protected Integer getSearchKey(String uuid) {
-        // TODO почему он ищет??! fullName же пустышка, а должно быть имя
         return Arrays.binarySearch(storage, 0, size, new Resume(uuid, ""));
     }
 

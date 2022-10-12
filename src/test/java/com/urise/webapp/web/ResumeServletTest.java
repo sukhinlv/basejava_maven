@@ -24,7 +24,6 @@ import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 class ResumeServletTest {
-
     @Mock
     HttpServletRequest request;
 

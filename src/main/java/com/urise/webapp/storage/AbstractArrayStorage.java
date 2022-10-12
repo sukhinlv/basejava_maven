@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Array based storage for Resumes
- */
 public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     public static final int STORAGE_CAPACITY = 10_000;
     protected final Resume[] storage = new Resume[STORAGE_CAPACITY];

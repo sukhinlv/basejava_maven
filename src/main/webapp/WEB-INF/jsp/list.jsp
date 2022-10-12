@@ -23,9 +23,8 @@
         <c:forEach items="${resumes}" var="resume">
             <jsp:useBean id="resume" class="com.urise.webapp.model.Resume"/>
             <tr>
-                <td><a href="resume?uuid=${resume.uuid}&action=view">${resume.fullName}</a></td>
-                <td><%=ContactType.MAIL.toHtml(resume.getContact(ContactType.MAIL))%>
-                </td>
+                <td><a href="resume?uuid=${resume.uuid}&action=view"><c:out value="${resume.fullName}"/></a></td>
+                <td><a href='${resume.getContact(ContactType.MAIL)}'><c:out value="${resume.getContact(ContactType.MAIL)}"/></a></td>
                 <td><a href="resume?uuid=${resume.uuid}&action=delete"><img src="<c:url value='/img/delete.png'/>"
                                                                             alt="delete"></a></td>
                 <td><a href="resume?uuid=${resume.uuid}&action=edit"><img src="<c:url value='/img/pencil.png'/>"

@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 class JsonParserTest {
-
     private final JsonParser jsonParser = new JsonParserImpl();
     private final Resume resume = createTestResume();
 
@@ -46,6 +45,7 @@ class JsonParserTest {
 
         Assertions.assertEquals(section, sectionFromJsonString);
     }
+
     @Test
     @DisplayName("Write OrganizationSection to Json string and read it from Json string")
     void testRWOrganizationSection() {
@@ -56,6 +56,7 @@ class JsonParserTest {
 
         Assertions.assertEquals(section, sectionFromJsonString);
     }
+
     private Resume createTestResume() {
         Resume resume = new Resume("UUID_1", "NAME_1");
 
