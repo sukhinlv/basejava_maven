@@ -164,7 +164,6 @@
         }
     }
 
-    // TODO: get rid of repeating code
     function CreateOrganizationSection(parentId, typeName, title = "", website = "") {
         let parentElement = document.getElementById(parentId);
         let organizationId = uuidv4();

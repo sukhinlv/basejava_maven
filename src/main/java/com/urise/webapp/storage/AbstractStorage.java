@@ -45,7 +45,7 @@ public abstract class AbstractStorage<SK> implements Storage {
 
     protected abstract void doUpdate(Resume r, SK searchKey);
 
-    // возвращает индекс в массиве или другой ключ
+    // return index in array or other key
     protected abstract SK getSearchKey(String uuid);
 
     protected abstract List<Resume> getStorageAsList();

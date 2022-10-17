@@ -19,7 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 abstract class AbstractStorageTest {
-    // folder test_storage must be created in root folder of the project
+    // folder test_storage will be created in root folder of the project
     protected static final File STORAGE_DIR = new File("test_storage");
     protected static final Path STORAGE_PATH = Paths.get("test_storage");
 

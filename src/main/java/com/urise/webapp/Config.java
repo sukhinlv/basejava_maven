@@ -39,10 +39,6 @@ public class Config {
         return INSTANCE;
     }
 
-    public String getStorageDir() {
-        return storageDir;
-    }
-
     public Storage getStorage() {
         return storage;
     }

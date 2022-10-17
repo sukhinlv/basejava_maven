@@ -23,6 +23,13 @@ public class PathStorage extends AbstractStorage<Path> {
         this.streamSerializer = Objects.requireNonNull(streamSerializer, "Read/write " +
                 "strategy class must not be null");
         Objects.requireNonNull(directory, "Directory must not be null");
+        if (!Files.exists(directory)) {
+            try {
+                Files.createDirectory(directory);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Can not create directory " + directory.toAbsolutePath(), e);
+            }
+        }
         if (!Files.isDirectory(directory)) {
             throw new IllegalArgumentException(directory.toAbsolutePath() + " is not directory");
         }
