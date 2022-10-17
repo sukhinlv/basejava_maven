@@ -81,6 +81,8 @@
     </dependencies>
 
     <build>
+        <finalName>basejava_Web</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
