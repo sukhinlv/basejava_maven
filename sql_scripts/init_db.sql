@@ -1,7 +1,7 @@
--- DROP DATABASE IF EXISTS resumes;
--- CREATE USER basejava_user WITH PASSWORD 'xxx';
--- CREATE DATABASE resumes;
--- GRANT ALL PRIVILEGES ON DATABASE resumes TO basejava_user;
+DROP DATABASE IF EXISTS resumes;
+CREATE USER basejava_user WITH PASSWORD 'xxx';
+CREATE DATABASE resumes;
+GRANT ALL PRIVILEGES ON DATABASE resumes TO basejava_user;
 
 create table resume
 (
@@ -11,8 +11,8 @@ create table resume
     full_name text     not null
 );
 
--- alter table resume
---     owner to basejava_user;
+alter table resume
+    owner to basejava_user;
 
 create unique index primary_key
     on resume (uuid);
@@ -28,8 +28,8 @@ create table contact
     value       text     not null
 );
 
--- alter table contact
---     owner to basejava_user;
+alter table contact
+    owner to basejava_user;
 
 create unique index contact_uuid_type_index
     on contact (resume_uuid, type);
@@ -45,8 +45,8 @@ create table section
     type        text                                                    not null
 );
 
--- alter table section
---     owner to basejava_user;
+alter table section
+    owner to basejava_user;
 
 create index resume_uuid_index
     on section (resume_uuid);
